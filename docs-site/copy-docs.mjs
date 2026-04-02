@@ -65,10 +65,12 @@ function processFile(srcPath, destFilename) {
   content = rewriteLinks(content);
   
   // 3. Prepare Frontmatter
+  const isIntro = destFilename === 'introduction.md';
   const frontmatter = `---
 title: "${title.replace(/"/g, '\\"')}"
 description: "LangChain Logbook content: ${title}"
 pubDatetime: ${PUB_DATE}
+featured: ${isIntro}
 tags: ["tutorial"]
 ---
 
