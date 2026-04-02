@@ -1,0 +1,34 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.env
+# global rule
+.cursorrules
+
+# MkDocs
+site/
+
+# IDE & OS
+.idea/
+.DS_Store
+*.swp
+
+# Testing
+.pytest_cache/
+
+# Databases & Cache
+**/chroma_db/
+*.sql
+*.sqlite3
+
+# Astro injected docs
+docs-site/src/content/docs/tutorials
+docs-site/src/content/docs/APPENDIX.md
+docs-site/src/content/docs/index.md
