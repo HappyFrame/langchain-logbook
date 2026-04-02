@@ -2,115 +2,98 @@ import fs from 'fs';
 import path from 'path';
 
 const SRC_DIR = path.resolve('../');
-const DEST_DIR = path.resolve('./src/content/docs');
+const DEST_DIR = path.resolve('./src/data/blog');
 const BASE_PATH = '/langchain-logbook';
+const PUB_DATE = new Date().toISOString();
+
+// Slugify function to match AstroPaper's behavior (kebab-case)
+function slugify(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')     // Replace spaces with -
+    .replace(/[^\w-]+/g, '')   // Remove all non-word chars
+    .replace(/--+/g, '-')       // Replace multiple - with single -
+    .replace(/^-+/, '')         // Trim - from start of text
+    .replace(/-+$/, '');        // Trim - from end of text
+}
 
 // Ensure destination exists
 if (!fs.existsSync(DEST_DIR)) {
   fs.mkdirSync(DEST_DIR, { recursive: true });
 }
 
+// 1. Clear destination
+const files = fs.readdirSync(DEST_DIR);
+for (const file of files) {
+  fs.rmSync(path.join(DEST_DIR, file), { recursive: true, force: true });
+}
+
 // Helper to rewrite links
 function rewriteLinks(content) {
   // Regex to find Markdown links like [text](./tutorials/01_Getting_Started.md)
-  // Converting to [text](/langchain-logbook/tutorials/01_getting_started/)
+  // AstroPaper uses /posts/[slug]/
   return content.replace(/\[([^\]]+)\]\(\.\/([^)]+)\.md\)/g, (match, text, relPath) => {
-    let newPath = relPath.toLowerCase().replace(/_/g, '_'); // Astro handles underscores fine, but case should be lower
+    const parts = relPath.split('/');
+    const filename = parts[parts.length - 1];
     
-    // Specific case for index/readme which might be linked as ./README.md
-    if (newPath === 'readme') return `[${text}](${BASE_PATH}/)`;
-    if (newPath === 'appendix') return `[${text}](${BASE_PATH}/appendix/)`;
+    if (filename.toLowerCase() === 'readme') return `[${text}](${BASE_PATH}/)`;
+    if (filename.toLowerCase() === 'appendix') return `[${text}](${BASE_PATH}/posts/appendix/)`;
     
-    // For tutorials/...
-    return `[${text}](${BASE_PATH}/${newPath}/)`;
+    const slug = slugify(filename);
+    return `[${text}](${BASE_PATH}/posts/${slug}/)`;
   });
 }
 
-// 1. Copy tutorials directory
-const tutorialsSrc = path.join(SRC_DIR, 'tutorials');
-const tutorialsDest = path.join(DEST_DIR, 'tutorials');
-if (fs.existsSync(tutorialsDest)) {
-  fs.rmSync(tutorialsDest, { recursive: true, force: true });
-}
-if (fs.existsSync(tutorialsSrc)) {
-  fs.cpSync(tutorialsSrc, tutorialsDest, { recursive: true });
-}
+// Core processing function
+function processFile(srcPath, destFilename) {
+  if (!fs.existsSync(srcPath)) return;
+  
+  let content = fs.readFileSync(srcPath, 'utf8');
+  
+  // 1. Extract and Strip H1
+  let title = destFilename.replace('.md', '');
+  const h1Match = content.match(/^#\s+(.+)$/m);
+  if (h1Match) {
+    title = h1Match[1].trim();
+    // Remove the H1 line to avoid duplication
+    content = content.replace(/^#\s+.+$/m, '').trim();
+  }
 
-// 2. Copy APPENDIX.md
-const appendixSrc = path.join(SRC_DIR, 'APPENDIX.md');
-const appendixDest = path.join(DEST_DIR, 'appendix.md'); // Use lowercase for better routing consistency
-if (fs.existsSync(appendixSrc)) {
-  fs.copyFileSync(appendixSrc, appendixDest);
-}
-
-// 3. Copy README.md as index.md
-const readmeSrc = path.join(SRC_DIR, 'README.md');
-const indexDestMdx = path.join(DEST_DIR, 'index.mdx');
-const indexDestMd = path.join(DEST_DIR, 'index.md');
-
-if (fs.existsSync(indexDestMdx)) {
-  fs.rmSync(indexDestMdx);
-}
-
-if (fs.existsSync(readmeSrc)) {
-  fs.copyFileSync(readmeSrc, indexDestMd);
-}
-
-// 4. Inject frontmatter AND rewrite links
-function processMarkdown(dir) {
-  const files = fs.readdirSync(dir, { withFileTypes: true });
-  for (const file of files) {
-    const fullPath = path.join(dir, file.name);
-    if (file.isDirectory()) {
-      processMarkdown(fullPath);
-    } else if (file.isFile() && fullPath.endsWith('.md')) {
-      let content = fs.readFileSync(fullPath, 'utf8');
-      
-      // 1. Rewrite relative links to absolute Astro routes
-      content = rewriteLinks(content);
-
-      // 2. Inject frontmatter if missing
-      if (!content.startsWith('---')) {
-        let title = file.name.replace('.md', '');
-        let frontmatter = '';
-
-        if (file.name === 'index.md') {
-          frontmatter = `---
-title: LangChain Logbook
-description: The ultimate learning path for LangChain and AI Agents.
-template: splash
-hero:
-  tagline: 从底层重新认识大语言模型应用架构，构建工业级 Agent
-  image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: 开始阅读教程
-      link: ${BASE_PATH}/tutorials/01_getting_started/
-      icon: right-arrow
-      variant: primary
-    - text: 查看附录协议
-      link: ${BASE_PATH}/appendix/
-      icon: document
+  // 2. Rewrite Links
+  content = rewriteLinks(content);
+  
+  // 3. Prepare Frontmatter
+  const frontmatter = `---
+title: "${title.replace(/"/g, '\\"')}"
+description: "LangChain Logbook content: ${title}"
+pubDatetime: ${PUB_DATE}
+tags: ["tutorial"]
 ---
 
 `;
-        } else {
-          // Try to extract H1
-          const h1Match = content.match(/^#\s+(.+)$/m);
-          if (h1Match) {
-            title = h1Match[1].trim();
-          }
-          frontmatter = `---\ntitle: "${title.replace(/"/g, '\\"')}"\n---\n\n`;
-        }
-        
-        content = frontmatter + content;
-      }
+  
+  fs.writeFileSync(path.join(DEST_DIR, destFilename), frontmatter + content);
+}
 
-      fs.writeFileSync(fullPath, content);
+// Process Tutorial Files
+const tutorialsDir = path.join(SRC_DIR, 'tutorials');
+if (fs.existsSync(tutorialsDir)) {
+  const tutFiles = fs.readdirSync(tutorialsDir);
+  for (const file of tutFiles) {
+    if (file.endsWith('.md')) {
+      processFile(path.join(tutorialsDir, file), file);
     }
   }
 }
 
-processMarkdown(DEST_DIR);
+// Process Appendix
+processFile(path.join(SRC_DIR, 'APPENDIX.md'), 'APPENDIX.md');
 
-console.log('Successfully copied docs, injected frontmatter, and fixed 404 links');
+// Special case for README -> index is handled by AstroPaper naturally
+// But we might want the README content on the Home page or as a post.
+// For now, let's just make it a post called 'Introduction'
+processFile(path.join(SRC_DIR, 'README.md'), 'introduction.md');
+
+console.log('Successfully synchronized docs for AstroPaper with title stripping');

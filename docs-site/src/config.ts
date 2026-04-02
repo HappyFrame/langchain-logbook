@@ -1,0 +1,23 @@
+export const SITE = {
+  website: "https://HappyFrame.github.io/langchain-logbook/",
+  author: "HappyFrame",
+  profile: "https://github.com/HappyFrame",
+  desc: "从底层重新认识大语言模型应用架构，构建工业级 Agent",
+  title: "LangChain Logbook",
+  ogImage: "astropaper-og.jpg",
+  lightAndDarkMode: true,
+  postPerIndex: 4,
+  postPerPage: 10,
+  scheduledPostMargin: 15 * 60 * 1000, 
+  showArchives: true,
+  showBackButton: true, 
+  editPost: {
+    enabled: true,
+    text: "在 GitHub 见证成长",
+    url: "https://github.com/HappyFrame/langchain-logbook",
+  },
+  dynamicOgImage: true,
+  dir: "ltr", 
+  lang: "zh", 
+  timezone: "Asia/Shanghai", 
+} as const;
