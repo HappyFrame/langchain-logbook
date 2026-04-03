@@ -11,7 +11,8 @@ import { slugifyStr } from "./slugify";
 export function getPath(
   id: string,
   filePath: string | undefined,
-  includeBase = true
+  includeBase = true,
+  includeBaseUrl = true
 ) {
   const pathSegments = filePath
     ?.replace(BLOG_PATH, "")
@@ -23,15 +24,18 @@ export function getPath(
 
   const basePath = includeBase ? "/posts" : "";
 
-  // Making sure `id` does not contain the directory
+  // Making sure `blogId` is slugified
   const blogId = id.split("/");
-  const slug = blogId.length > 0 ? blogId.slice(-1) : blogId;
+  const rawId = blogId.length > 0 ? blogId.slice(-1)[0] : id;
+  const slug = slugifyStr(rawId);
 
   const path = !pathSegments || pathSegments.length < 1
     ? [basePath, slug].join("/")
     : [basePath, ...pathSegments, slug].join("/");
 
+  if (!includeBaseUrl) return path.replace(/^\//, "");
+
   // Ensure double slashes are handled and BASE_URL is prepended
   const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
-  return `${baseUrl}${path}`;
+  return `${baseUrl}${path.startsWith("/") ? path : "/" + path}`;
 }
