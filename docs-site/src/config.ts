@@ -10,14 +10,14 @@ export const SITE = {
   postPerPage: 10,
   scheduledPostMargin: 15 * 60 * 1000, 
   showArchives: true,
-  showBackButton: true, 
+  showBackButton: true,
   editPost: {
     enabled: true,
     text: "在 GitHub 见证成长",
     url: "https://github.com/HappyFrame/langchain-logbook",
   },
   dynamicOgImage: true,
-  dir: "ltr", 
-  lang: "zh", 
-  timezone: "Asia/Shanghai", 
+  dir: "ltr",
+  lang: "zh",
+  timezone: "Asia/Shanghai",
 } as const;

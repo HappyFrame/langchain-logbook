@@ -1,37 +1,22 @@
 ---
 layout: ../layouts/AboutLayout.astro
-title: "About"
+title: "关于作者 (About Author)"
 ---
 
-AstroPaper is a minimal, accessible and SEO-friendly blog theme built with [Astro](https://astro.build/) and [Tailwind CSS](https://tailwindcss.com/).
+👋 欢迎来到我的 LangChain 学习日志！
 
-![Astro Paper](public/astropaper-og.jpg)
+### 👤 我是谁？
+我是 **HappyFrame**，一名深耕于 AI 智能体 (AI Agents) 与大语言模型应用架构的开发者。
 
-AstroPaper provides a solid foundation for blogs, or even portfolios\_ with full markdown support, built-in dark mode, and a clean layout that works out-of-the-box.
+### 🦜 为什么写这个项目？
+在 2026 年，LangChain 已经进入了 1.2.x 时代，Agent-First 的理念已经成为了行业标准。我希望通过这个项目：
+- **体系化**：不再是零散的代码片段，而是教科书级的渐进式学习路径。
+- **工业级**：分享如何在生产环境中构建具备记忆、工具调用和状态编排能力的 Agent。
+- **开源精神**：将我的航海日志公之于众，与所有 AI 探索者同行。
 
-The blog posts in this theme also serve as guides, docs or example articles\_ making AstroPaper a flexible starting point for your next content-driven site.
+### 🚀 联系我
+- **GitHub**: [HappyFrame](https://github.com/HappyFrame)
+- **项目源码**: [langchain-logbook](https://github.com/HappyFrame/langchain-logbook)
 
-## Features
-
-AstroPaper comes with a set of useful features that make content publishing easy and effective:
-
-- SEO-friendly
-- Fast performance
-- Light & dark mode
-- Highly customizable
-- Organizable blog posts
-- Responsive & accessible
-- Static search with [PageFind](https://pagefind.app/)
-- Automatic social image generation
-
-and so much more.
-
-## Show your support
-
-If you like [AstroPaper](https://github.com/satnaing/astro-paper), consider giving it a star ⭐️.
-
-Found a bug 🐛 or have an improvement ✨ in mind? Feel free to open an [issue](https://github.com/satnaing/astro-paper/issues), submit a [pull request](https://github.com/satnaing/astro-paper/pulls) or start a [discussion](https://github.com/satnaing/astro-paper/discussions).
-
-If you find this theme helpful, you can also [sponsor me on GitHub](https://github.com/sponsors/satnaing) or [buy me a coffee](https://buymeacoffee.com/satnaing) to show your support — every penny counts.
-
-Kyay zuu! 🙏🏼
+---
+*"愿我们的智能体都能拥有灵魂。"*
