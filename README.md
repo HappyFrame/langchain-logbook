@@ -49,6 +49,43 @@
 
 ---
 
+## 🚀 快速开始 (Quick Start)
+
+为了简化环境配置和日常开发，项目提供了 `Makefile` 工具。如果你是第一次使用，可以按照以下步骤操作：
+
+1. **环境初始化**:
+   - 如果你还没有安装 `uv` (推荐的 Python 包管理工具)，可以运行：
+     ```bash
+     make install-uv
+     ```
+   - 初始化虚拟环境并创建 `.env` 文件：
+     ```bash
+     make setup
+     ```
+   - 编辑 `.env` 文件，填入你的 API Key (如 OpenAI 或 DeepSeek)。
+
+2. **安装依赖**:
+   ```bash
+   make install
+   ```
+
+3. **启动学习**:
+   - 运行 Jupyter Notebook 以交互式学习教程：
+     ```bash
+     make notebook
+     ```
+   - 或者运行 Jupyter Lab：
+     ```bash
+     make lab
+     ```
+
+4. **清理环境**:
+   ```bash
+   make clean
+   ```
+
+---
+
 ## 🛠️ 环境依赖
 
 - **Python**: 3.12+ (uv 驱动)

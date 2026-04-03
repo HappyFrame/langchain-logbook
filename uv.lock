@@ -1712,7 +1712,7 @@ wheels = [
 ]
 
 [[package]]
-name = "langchain-learn"
+name = "langchain-logbook"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
