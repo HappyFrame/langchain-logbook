@@ -48,6 +48,11 @@ htmlcov/
 *.db
 vector_store/
 
+# Astro injected docs
+docs-site/src/content/docs/tutorials
+docs-site/src/content/docs/APPENDIX.md
+docs-site/src/content/docs/index.md
+
 # Logs
 *.log
 logs/
